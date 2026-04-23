@@ -1,0 +1,39 @@
+name: synapse_quote_creation
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.10.7
+
+dependencies:
+  flutter:
+    sdk: flutter
+  sqflite: ^2.3.0
+  sqflite_common_ffi: ^2.3.0
+  sqlite3_flutter_libs: ^0.5.15
+  path: ^1.8.3
+  pdf: ^3.10.7
+  printing: ^5.11.1
+  intl: ^0.18.1
+  provider: ^6.0.5
+  google_fonts: ^6.1.0
+  share_plus: ^7.1.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/images/app-document-icon.png"
+  min_sdk_android: 21
+  adaptive_icon_background: "#ffffff"
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^2.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/sandro-header.png
