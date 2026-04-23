@@ -24,14 +24,14 @@ class PdfService {
 
     // carregamento das configurações
     final settings = await DatabaseHelper().getSettings();
-    final companyName = settings['companyName'] ?? 'SANDRO ALMEIDA';
+    final companyName = settings['companyName'] ?? 'FLORESTA ENGENHARIA LTDA';
     final serviceResponsible =
-        settings['serviceResponsible'] ?? 'Responsável técnico';
-    final cnpj = settings['cnpj'] ?? '43.013.882/0001-32';
-    final telephone = settings['telephone'] ?? '(11) 95595-3315';
+        settings['serviceResponsible'] ?? 'Engenheiro Ambiental';
+    final cnpj = settings['cnpj'] ?? '12.345.678/0001-10';
+    final telephone = settings['telephone'] ?? '(11) 99999-1236';
 
     // carregamento da imagem do cabeçalho
-    final image = await rootBundle.load('assets/images/sandro-header.png');
+    final image = await rootBundle.load('assets/images/pdf-header.png');
     final imageBytes = image.buffer.asUint8List();
     final headerImage = pw.MemoryImage(imageBytes);
 

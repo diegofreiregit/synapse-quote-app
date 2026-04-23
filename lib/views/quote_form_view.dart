@@ -129,7 +129,8 @@ class _QuoteFormViewState extends State<QuoteFormView> {
       final pdfBytes = await _pdfService.generateQuotePdf(quote);
       await Printing.sharePdf(
         bytes: pdfBytes,
-        filename: 'Documento_${quote.customerName.replaceAll(' ', '_')}.pdf',
+        filename:
+            'Documento_${quote.customerName.replaceAll(' ', '_')}_${DateFormat('yyyyMMdd').format(quote.serviceDate)}.pdf',
       );
     }
   }

@@ -48,9 +48,11 @@ class _QuoteListViewState extends State<QuoteListView> {
   void _filterQuotes(String query) {
     setState(() {
       _filteredQuotes = _quotes
-          .where((q) =>
-              q.customerName.toLowerCase().contains(query.toLowerCase()) ||
-              q.mainGoal.toLowerCase().contains(query.toLowerCase()))
+          .where(
+            (q) =>
+                q.customerName.toLowerCase().contains(query.toLowerCase()) ||
+                q.mainGoal.toLowerCase().contains(query.toLowerCase()),
+          )
           .toList();
     });
   }
@@ -96,8 +98,8 @@ class _QuoteListViewState extends State<QuoteListView> {
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : _filteredQuotes.isEmpty
-                    ? _buildEmptyState()
-                    : _buildList(),
+                ? _buildEmptyState()
+                : _buildList(),
           ),
         ],
       ),
@@ -193,7 +195,7 @@ class _QuoteListViewState extends State<QuoteListView> {
                   await Printing.sharePdf(
                     bytes: pdfBytes,
                     filename:
-                        'Documento_${quote.customerName.replaceAll(' ', '_')}.pdf',
+                        'Documento_${quote.customerName.replaceAll(' ', '_')}_${DateFormat('yyyyMMdd').format(quote.serviceDate)}.pdf',
                   );
                 }
               },
