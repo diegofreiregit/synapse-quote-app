@@ -5,6 +5,8 @@ import '../services/database_helper.dart';
 import '../services/pdf_service.dart';
 import '../widgets/main_layout.dart';
 import 'package:printing/printing.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:flutter/services.dart';
 
 // Página para criação dos documentos
 
@@ -30,6 +32,12 @@ class _QuoteFormViewState extends State<QuoteFormView> {
   late TextEditingController _descriptionController;
   late TextEditingController _priceController;
   late DateTime _selectedDate;
+
+  final _cpfFormatter = CpfCnpjFormatter();
+  final _phoneFormatter = MaskTextInputFormatter(
+    mask: '(##) #####-####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
 
   @override
   void initState() {
@@ -167,7 +175,11 @@ class _QuoteFormViewState extends State<QuoteFormView> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Nome do Cliente'),
+                decoration: const InputDecoration(
+                  labelText: 'Nome do Cliente',
+                  counterText: "",
+                ),
+                maxLength: 100,
                 validator: (v) => v!.isEmpty ? 'Campo obrigatório' : null,
               ),
               const SizedBox(height: 12),
@@ -176,14 +188,41 @@ class _QuoteFormViewState extends State<QuoteFormView> {
                   Expanded(
                     child: TextFormField(
                       controller: _cpfController,
-                      decoration: const InputDecoration(labelText: 'CPF'),
+                      decoration: const InputDecoration(
+                        labelText: 'CPF / CNPJ',
+                        hintText: 'Ex: 123.456.789-10',
+                      ),
+                      inputFormatters: [_cpfFormatter],
+                      keyboardType: TextInputType.number,
+                      validator: (v) {
+                        if (v == null || v.isEmpty) return 'Obrigatório';
+                        final digits = v.replaceAll(RegExp(r'\D'), '');
+                        if (digits.length <= 11) {
+                          if (digits.length < 11) return 'CPF incompleto';
+                        } else {
+                          if (digits.length < 14) return 'CNPJ incompleto';
+                        }
+                        return null;
+                      },
+                      maxLength: 18,
                     ),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: TextFormField(
                       controller: _phoneController,
-                      decoration: const InputDecoration(labelText: 'Telefone'),
+                      decoration: const InputDecoration(
+                        labelText: 'Telefone',
+                        hintText: 'Ex: (11) 91234-5678',
+                      ),
+                      inputFormatters: [_phoneFormatter],
+                      keyboardType: TextInputType.phone,
+                      validator: (v) {
+                        if (v!.isEmpty) return 'Obrigatório';
+                        if (v.length < 14) return 'Telefone incompleto';
+                        return null;
+                      },
+                      maxLength: 15,
                     ),
                   ),
                 ],
@@ -193,7 +232,9 @@ class _QuoteFormViewState extends State<QuoteFormView> {
                 controller: _addressController,
                 decoration: const InputDecoration(
                   labelText: 'Endereço do Imóvel',
+                  counterText: "",
                 ),
+                maxLength: 200,
               ),
               const SizedBox(height: 32),
 
@@ -236,7 +277,9 @@ class _QuoteFormViewState extends State<QuoteFormView> {
                 controller: _goalController,
                 decoration: const InputDecoration(
                   labelText: 'Objetivo Principal',
+                  counterText: "",
                 ),
+                maxLength: 150,
                 validator: (v) => v!.isEmpty ? 'Campo obrigatório' : null,
               ),
               const SizedBox(height: 12),
@@ -280,5 +323,26 @@ class _QuoteFormViewState extends State<QuoteFormView> {
         color: Color(0xFF0F172A),
       ),
     );
+  }
+}
+
+class CpfCnpjFormatter extends TextInputFormatter {
+  final _formatter = MaskTextInputFormatter(
+    mask: '###.###.###-##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+    if (digits.length <= 11) {
+      _formatter.updateMask(mask: '###.###.###-##');
+    } else {
+      _formatter.updateMask(mask: '##.###.###/####-##');
+    }
+    return _formatter.formatEditUpdate(oldValue, newValue);
   }
 }

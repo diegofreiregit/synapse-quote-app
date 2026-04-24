@@ -7,7 +7,7 @@ Este projeto é uma aplicação em Flutter que permite a criação de documentos
 -   **Interface Gráfica**: Interface moderna desenvolvida com **Flutter**.
 -   **Banco de Dados**: Banco de dados local para armazenamento de cotações e laudos técnicos.
 -   **PDF**: Geração de documentos PDF para cotações e laudos técnicos.
--   **Compartilhamento**: Compartilhamento de documentos PDF por e-mail, WhatsApp, etc.
+-   **Compartilhamento (Mobile)**: Compartilhamento de documentos PDF por e-mail, WhatsApp, etc.
 
 O aplicativo foi pensado para ser executado em dispositivos móveis (Android e iOS), mas também pode ser executado em desktops (Windows, macOS e Linux).
 

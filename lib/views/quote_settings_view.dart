@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../services/database_helper.dart';
 import '../widgets/main_layout.dart';
+import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
+import 'package:flutter/services.dart';
 
 // Página para as configurações gerais da aplicação.
 
@@ -19,6 +21,13 @@ class _QuoteSettingsViewState extends State<QuoteSettingsView> {
   final _responsibleController = TextEditingController();
   final _cnpjController = TextEditingController();
   final _phoneController = TextEditingController();
+
+  final _phoneFormatter = MaskTextInputFormatter(
+    mask: '(##) #####-####',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
+  final _cnpjFormatter = CpfCnpjFormatter();
 
   bool _isLoading = true;
 
@@ -97,7 +106,9 @@ class _QuoteSettingsViewState extends State<QuoteSettingsView> {
                       decoration: const InputDecoration(
                         labelText: 'Nome da Empresa / Profissional',
                         hintText: 'Ex: FLORESTA ENGENHARIA LTDA',
+                        counterText: "",
                       ),
+                      maxLength: 100,
                       validator: (v) => v!.isEmpty ? 'Campo obrigatório' : null,
                     ),
                     const SizedBox(height: 16),
@@ -106,7 +117,9 @@ class _QuoteSettingsViewState extends State<QuoteSettingsView> {
                       decoration: const InputDecoration(
                         labelText: 'Cargo / Responsabilidade',
                         hintText: 'Ex: Engenheiro Ambiental',
+                        counterText: "",
                       ),
+                      maxLength: 100,
                       validator: (v) => v!.isEmpty ? 'Campo obrigatório' : null,
                     ),
                     const SizedBox(height: 16),
@@ -114,8 +127,22 @@ class _QuoteSettingsViewState extends State<QuoteSettingsView> {
                       controller: _cnpjController,
                       decoration: const InputDecoration(
                         labelText: 'CNPJ / CPF',
-                        hintText: 'Ex: 12.234.567/0001-98',
+                        hintText: 'Ex: 12.234.567/0001-98 ou 123.456.789-10',
                       ),
+                      inputFormatters: [_cnpjFormatter],
+                      keyboardType: TextInputType.number,
+                      validator: (v) {
+                        if (v != null && v.isNotEmpty) {
+                          final digits = v.replaceAll(RegExp(r'\D'), '');
+                          if (digits.length <= 11) {
+                            if (digits.length < 11) return 'CPF incompleto';
+                          } else {
+                            if (digits.length < 14) return 'CNPJ incompleto';
+                          }
+                        }
+                        return null;
+                      },
+                      maxLength: 18,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
@@ -124,6 +151,15 @@ class _QuoteSettingsViewState extends State<QuoteSettingsView> {
                         labelText: 'Telefone de Contato',
                         hintText: 'Ex: (11) 91234-5678',
                       ),
+                      inputFormatters: [_phoneFormatter],
+                      keyboardType: TextInputType.phone,
+                      validator: (v) {
+                        if (v!.isNotEmpty && v.length < 14) {
+                          return 'Telefone incompleto';
+                        }
+                        return null;
+                      },
+                      maxLength: 15,
                     ),
                     const SizedBox(height: 40),
                     SizedBox(
@@ -147,5 +183,26 @@ class _QuoteSettingsViewState extends State<QuoteSettingsView> {
               ),
             ),
     );
+  }
+}
+
+class CpfCnpjFormatter extends TextInputFormatter {
+  final _formatter = MaskTextInputFormatter(
+    mask: '###.###.###-##',
+    filter: {"#": RegExp(r'[0-9]')},
+  );
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final digits = newValue.text.replaceAll(RegExp(r'\D'), '');
+    if (digits.length <= 11) {
+      _formatter.updateMask(mask: '###.###.###-##');
+    } else {
+      _formatter.updateMask(mask: '##.###.###/####-##');
+    }
+    return _formatter.formatEditUpdate(oldValue, newValue);
   }
 }
