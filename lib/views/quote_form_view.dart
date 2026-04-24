@@ -95,7 +95,11 @@ class _QuoteFormViewState extends State<QuoteFormView> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Documento salvo com sucesso!')),
         );
-        Navigator.pop(context);
+        if (Navigator.canPop(context)) {
+          Navigator.pop(context);
+        } else {
+          Navigator.pushReplacementNamed(context, '/');
+        }
       }
     }
   }
@@ -190,12 +194,12 @@ class _QuoteFormViewState extends State<QuoteFormView> {
                       controller: _cpfController,
                       decoration: const InputDecoration(
                         labelText: 'CPF / CNPJ',
-                        hintText: 'Ex: 123.456.789-10',
+                        hintText: 'Opcional.Ex: 123.456.789-10',
                       ),
                       inputFormatters: [_cpfFormatter],
                       keyboardType: TextInputType.number,
                       validator: (v) {
-                        if (v == null || v.isEmpty) return 'Obrigatório';
+                        if (v == null || v.isEmpty) return null;
                         final digits = v.replaceAll(RegExp(r'\D'), '');
                         if (digits.length <= 11) {
                           if (digits.length < 11) return 'CPF incompleto';
@@ -218,7 +222,7 @@ class _QuoteFormViewState extends State<QuoteFormView> {
                       inputFormatters: [_phoneFormatter],
                       keyboardType: TextInputType.phone,
                       validator: (v) {
-                        if (v!.isEmpty) return 'Obrigatório';
+                        if (v == null || v.isEmpty) return 'Campo obrigatório';
                         if (v.length < 14) return 'Telefone incompleto';
                         return null;
                       },
@@ -233,6 +237,8 @@ class _QuoteFormViewState extends State<QuoteFormView> {
                 decoration: const InputDecoration(
                   labelText: 'Endereço do Imóvel',
                   counterText: "",
+                  hintText:
+                      'Opcional. Ex: Rua das Flores, 123 - Centro, São Paulo - SP',
                 ),
                 maxLength: 200,
               ),
@@ -267,7 +273,7 @@ class _QuoteFormViewState extends State<QuoteFormView> {
                         labelText: 'Valor Total',
                       ),
                       keyboardType: TextInputType.number,
-                      validator: (v) => v!.isEmpty ? 'Campo obrigatório' : null,
+                      validator: (v) => (v == null || v.isEmpty) ? 'Campo obrigatório' : null,
                     ),
                   ),
                 ],

@@ -71,14 +71,24 @@ class PdfService {
                     _buildInfoRow(
                       fontBold,
                       fontRegular,
-                      'CPF:',
-                      quote.customerCpf,
+                      quote.customerCpf == "" || quote.customerCpf == null
+                          ? ""
+                          : "CPF/CNPJ:",
+                      quote.customerCpf == "" || quote.customerCpf == null
+                          ? ""
+                          : quote.customerCpf,
                     ),
                     _buildInfoRow(
                       fontBold,
                       fontRegular,
-                      'Endereço do imóvel:',
-                      quote.customerAddress,
+                      quote.customerAddress == "" ||
+                              quote.customerAddress == null
+                          ? ""
+                          : 'Endereço:',
+                      quote.customerAddress == "" ||
+                              quote.customerAddress == null
+                          ? ""
+                          : quote.customerAddress,
                     ),
                     _buildInfoRow(
                       fontBold,
@@ -159,13 +169,14 @@ class PdfService {
                               fontSize: 12,
                             ),
                           ),
-                          pw.Text(
-                            'CNPJ: $cnpj',
-                            style: pw.TextStyle(
-                              font: fontRegular,
-                              fontSize: 12,
+                          if (cnpj != "")
+                            pw.Text(
+                              'CPF/CNPJ: $cnpj',
+                              style: pw.TextStyle(
+                                font: fontRegular,
+                                fontSize: 12,
+                              ),
                             ),
-                          ),
                           pw.Text(
                             telephone,
                             style: pw.TextStyle(
