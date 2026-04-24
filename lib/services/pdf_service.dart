@@ -180,10 +180,6 @@ class PdfService {
                       children: [
                         pw.Expanded(
                           flex: 2,
-                          child: pw.Container(height: 40, color: lightBlue),
-                        ),
-                        pw.Expanded(
-                          flex: 2,
                           child: pw.Container(
                             height: 40,
                             child: pw.CustomPaint(
